@@ -1,0 +1,5 @@
+.vscode
+__pycache__
+data
+.DS_Store
+nohup.out
