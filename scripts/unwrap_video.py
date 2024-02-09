@@ -1,8 +1,37 @@
-# %%
+# script to unwrap video of rotating object into a panorama
+# example usage: "python unwrap_video.py path/to/video path/to/save"
+
+# uses Fiji!
+# requires a bit of installation, 
+# 1. create fiji environment via "conda create -n pyimagej-env openjdk=11 python=3.09"
+# 2. navigate to environment "conda activate pyimagej-env"
+# 3. "pip install pyimagej"
+# [4. install maven "brew install maven"]
+
 import cv2
 import numpy as np
 import pandas as pd
 import os
+import argparse
+import imagej
+import numpy as np
+from PIL import Image
+import shutil
+
+# default parameter
+fiji_path = ''
+
+# pulling user-input variables from command line
+parser = argparse.ArgumentParser(description='script to unwrap a video into a panorama')
+parser.add_argument('-p', '--video-path', dest='video_path', action='store', type=str, default=video_path, required=True, help='location of video file')
+parser.add_argument('-s', '--save-path', dest='save_path', action='store', type=str, default=save_path, required=True, help='the folder in which to save unwrapped file')
+parser.add_argument('-f', '--fiji-path', dest='save_path', action='store', type=str, default=fiji_path, required=True, help='the folder in which to save unwrapped file')
+
+# ingesting user-input arguments
+args = parser.parse_args()
+video_path = args.video_path
+save_path = args.save_path
+fiji_path = args.fiji_path
 
 # extract frames from video
 def extract_frames(video_path, interval=1, save=False, save_path=''):
@@ -32,32 +61,17 @@ def extract_frames(video_path, interval=1, save=False, save_path=''):
 
     return(frames)
 
-video_path = 'data/test_cropped.mov'
-save_path = 'data'
 frames = extract_frames(video_path, interval=3, save=True, save_path=save_path)
 
 # crop video appropriately
 ## add later ##
 
-# %%
-# use Fiji
-# requires a bit of installation, 
-# 1. create fiji environment via "create -n pyimagej-env openjdk=11 python=3.10"
-# 2. navigate to environment "conda activate pyimagej-env"
-# 3. "pip install pyimagej"
-# 4. install maven "brew install maven"
-
-#imp = ij.io().open("/Users/windinm/repos/unwrap-video/data/sequence/157.jpg")
-
-import imagej
-import numpy as np
-
 # Start ImageJ
-ij = imagej.init('/Applications/Fiji.app') # point to local installation
+ij = imagej.init(fiji_path) # point to local installation
 #ij = imagej.init('sc.fiji:fiji')
 #ij.getVersion()
 
-path = '/Users/windinm/repos/unwrap-video/data/sequence'
+path = f'{save_path}/sequence'
 
 plugin = "Grid/Collection stitching"
 args = {
@@ -80,14 +94,11 @@ args = {
     "output_directory": f'{path}'
 }
 
+# run plugin
 ij.py.run_plugin(plugin, args)
 
-# %%
 # Fiji stitcher saves output as separate 8-bit R, G, and B images
 # merge them together and save here
-
-from PIL import Image
-import shutil
 
 # Open the 8-bit grayscale TIFF images
 image_r = Image.open(f'{path}/img_t1_z1_c1')
@@ -98,12 +109,10 @@ image_b = Image.open(f'{path}/img_t1_z1_c3')
 image_rgb = Image.merge('RGB', (image_r, image_g, image_b))
 
 # save the image
-image_rgb.save(f'/Users/windinm/repos/unwrap-video/{save_path}/stitched-image.jpg')
+image_rgb.save(f'{save_path}/stitched-image.jpg')
 
 # delete everything from sequence directory and then directory itself
 try:
     shutil.rmtree(f'{path}/')
 except:
     print('Cannot delete folder!')
-
-# %%
