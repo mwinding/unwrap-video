@@ -25,7 +25,7 @@ fiji_path = 'home/shared/Fiji-installation/Fiji.app'
 parser = argparse.ArgumentParser(description='script to unwrap a video into a panorama')
 parser.add_argument('-p', '--video-path', dest='video_path', action='store', type=str, required=True, help='location of video file')
 parser.add_argument('-s', '--save-path', dest='save_path', action='store', type=str, required=True, help='the folder in which to save unwrapped file')
-parser.add_argument('-f', '--fiji-path', dest='save_path', action='store', type=str, default=fiji_path, help='point to local installation of Fiji')
+parser.add_argument('-f', '--fiji-path', dest='fiji_path', action='store', type=str, default=fiji_path, help='point to local installation of Fiji')
 
 # ingesting user-input arguments
 args = parser.parse_args()
