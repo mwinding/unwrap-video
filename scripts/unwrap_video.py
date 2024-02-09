@@ -19,7 +19,7 @@ from PIL import Image
 import shutil
 
 # default parameter
-fiji_path = 'home/shared/Fiji-installation/Fiji.app'
+fiji_path = '~/home/shared/Fiji-installation/Fiji.app'
 
 # pulling user-input variables from command line
 parser = argparse.ArgumentParser(description='script to unwrap a video into a panorama')
