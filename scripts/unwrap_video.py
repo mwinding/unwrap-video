@@ -22,7 +22,7 @@ import shutil
 import scyjava
 
 # default parameter
-fiji_path = '~/home/shared/Fiji-installation/Fiji.app'
+fiji_path = '/camp/home/shared/Fiji-installation/Fiji.app'
 
 # pulling user-input variables from command line
 parser = argparse.ArgumentParser(description='script to unwrap a video into a panorama')
@@ -99,6 +99,7 @@ def stitch_images(frames, save_path, tile_config, name):
 
     # if tile_config=True, stitch based on tile configuration file
     if(tile_config==True):
+
         args = {
             "type": "[Positions from file]",
             "order": "[Defined by TileConfiguration]",
